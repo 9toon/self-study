@@ -1,6 +1,17 @@
 : cascade base
 : around content -> {
-<h1><: $greeting :> <: $c.stash.site_name :></h1>
-<p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+    <div class="row">
+        <div class="postArea">
+            <form action="/" method="POST">
+            <input type="text" name="content" value="">
+
+            <button type="submit" class="btn">送信する</button>
+        </div>
+        <ul class="showPostsArea">
+            : for $posts -> $post {
+                <li><: $post.content :></li>
+            : }
+        </ul>
+    </div>
 : }
 
