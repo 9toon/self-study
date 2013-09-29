@@ -1,0 +1,4 @@
+database: 
+    user: "admin"
+    password: "hy0528hy"
+    dsn: "dbi:mysql:dena"

@@ -2,33 +2,23 @@ package App::Web;
 
 use strict;
 use warnings;
-use utf8;
+
 use Kossy;
-
 use utf8;
-use Teng;
-use Teng::Schema::Loader;
 use Data::Dumper;
+use Models::Model;
+use JSON;
 
-my $dsn = 'dbi:mysql:dena';
-my $user = 'admin';
-my $pass = 'hy0528hy';
 
-my $dbh = DBI->connect($dsn, $user, $pass, {
-    'mysql_enable_urf8' => 1,
-});
-
-my $teng = Teng::Schema::Loader->load(
-    'dbh' => $dbh,
-    'namespace' => 'App::DB',
-);
+# モデル
+my $model = Models::Model->new;
 
 sub save_post {
     my $content = $_[0];
 
     $content = 'empty' if ! defined $content;
 
-    my $result = $teng->insert('memo' => {
+    my $result = $model->insert('tasks' => {
         'content' => $content,
         'created' => \'NOW()',
     });
@@ -37,7 +27,10 @@ sub save_post {
 }
 
 sub get_posts {
-    my $rows = $teng->search('memo', {});
+    my $rows = $model->search('tasks', {
+        'done_flg' => 0,
+        'del_flg' => 0
+        });
     my $posts = $rows->all;
 
     return $posts;
@@ -84,6 +77,66 @@ post '/' => sub {
 
     return $c->redirect('/');
 };
+
+post '/delete' => sub {
+    my ( $self, $c ) = @_;
+    my $data = $c->req->parameters;
+    my $taskId = $data->{id};
+    
+    my $result = {
+        'status' => 0,
+    };
+
+    my $ret;
+    $ret = $model->update(
+        'tasks' => {
+            'modified' => \'NOW()',
+            'done_flg' => 1
+        },
+        {
+            'id' => $taskId
+        });
+
+    if ($ret) {
+        $result->{status} = 1;
+    }
+
+    my $json = to_json($result, { utf8 => 1});
+    
+    return $json;
+
+};
+
+post '/update' => sub {
+    my ( $self, $c ) = @_;
+    my $data = $c->req->parameters;
+    my $taskId = $data->{id};
+    my $content = $data->{content};
+    
+    my $result = {
+        'status' => 0,
+    };
+
+    my $ret;
+    $ret = $model->update(
+        'tasks' => {
+            'content' => $content,
+            'modified' => \'NOW()'
+        },
+        {
+            'id' => $taskId
+        });
+
+    if ($ret) {
+        $result->{status} = 1;
+    }
+
+    my $json = to_json($result, { utf8 => 1});
+    
+    return $json;
+    
+};
+
 
 1;
 
