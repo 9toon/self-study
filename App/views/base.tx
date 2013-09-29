@@ -14,18 +14,54 @@ body {
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script type="text/javascript">
 $(function(){
-    $('.taskTitle').click(function(e) {
+    $(document).on('click', '.taskTitle', function(e) {
         var target = $(this).parent('.taskItem');
         var val = $(this).text();
 
         // 
         $(this).remove();
-        var wrap = $('<p class="editAreaWrap">'
-            + '<input type="text" name="content" value="' + val  +  '" class="editing">'
-            + '<p class="sendUpdateBtn btn btn-info">更新</p></p>');
+        var wrap = '<div class="editAreaWrap">'
+            + '<input type="text" name="content" value="'
+            + val
+            + '" class="editing">'
+            + '<p class="sendUpdateBtn btn btn-info">更新</p></div>';
+
+
+            console.log(wrap);
         // show input 
         $(wrap).prependTo(target);
 
+    });
+
+    $('#sendNewTaskBtn').click(function() {
+        var content = $('#newTaskInput').val();
+        $.ajax({
+            url: '/add',
+            type: 'POST',
+            data: {
+                content : content
+            },
+            dataType: 'json',
+            success: function(json, status) {
+                if (json.status > 0) {
+                    $('#newTaskInput').val('');
+                    var dom = '<li class="taskItem">'
+                        + '<p class="taskTitle"></p>'
+                        + '<p class="doneBtn btn btn-warning">完了</p>'
+                        + '<input class="task_id" type="hidden" name="task_id" value="'
+                        + json.id
+                        + '"></li>';
+                    $('.taskItems').prepend(dom);
+
+                    $('.taskItem:first-child').find('.taskTitle').text(content);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                console.log(errorThrown);
+            }
+        });
+   
     });
 
     $(document).on('click', '.sendUpdateBtn', function() {
@@ -56,7 +92,7 @@ $(function(){
 
     });
 
-    $('.doneBtn').click(function(e) {
+    $(document).on('click', '.doneBtn', function(e) {
         var id = $(this).next('.task_id').val();
         var target = $(this).parent('.taskItem');
 

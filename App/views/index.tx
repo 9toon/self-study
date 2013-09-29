@@ -2,10 +2,9 @@
 : around content -> {
     <div class="row">
         <div class="postArea">
-            <form action="/" method="POST">
-            <input type="text" name="content" value="">
+            <input type="text" name="content" value="" id="newTaskInput">
 
-            <button type="submit" class="btn">送信する</button>
+            <button type="submit" class="btn" id="sendNewTaskBtn">送信する</button>
         </div>
         <ul class="taskItems">
             : for $posts -> $post {

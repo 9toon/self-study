@@ -30,7 +30,8 @@ sub get_posts {
     my $rows = $model->search('tasks', {
         'done_flg' => 0,
         'del_flg' => 0
-        });
+        },
+        , +{ order_by => 'created DESC' });
     my $posts = $rows->all;
 
     return $posts;
@@ -67,15 +68,31 @@ get '/json' => sub {
     $c->render_json({ greeting => $result->valid->get('q') });
 };
 
-post '/' => sub {
+post '/add' => sub {
     my ( $self, $c ) = @_;
 
     my $data = $c->req->parameters;
     my $content = $data->{"content"};
 
-    my $id = save_post($content);
+    my $result = {
+        'status' => 0,
+    };
 
-    return $c->redirect('/');
+    my $ret;
+    $ret = $model->fast_insert('tasks' => {
+            'content' => $content,
+            'created' => \'NOW()'
+        });
+
+    if ($ret) {
+        $result->{status} = 1;
+        $result->{id} = $ret;
+    }
+
+    my $json = to_json($result, { utf8 => 1});
+    
+    return $json;
+
 };
 
 post '/delete' => sub {
