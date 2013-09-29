@@ -11,6 +11,76 @@ body {
 }
 </style>
 <link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>">
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+$(function(){
+    $('.taskTitle').click(function(e) {
+        var target = $(this).parent('.taskItem');
+        var val = $(this).text();
+
+        // 
+        $(this).remove();
+        var wrap = $('<p class="editAreaWrap">'
+            + '<input type="text" name="content" value="' + val  +  '" class="editing">'
+            + '<p class="sendUpdateBtn btn btn-info">更新</p></p>');
+        // show input 
+        $(wrap).prependTo(target);
+
+    });
+
+    $(document).on('click', '.sendUpdateBtn', function() {
+        var parent = $(this).parents('.taskItem');
+
+        var id = parent.find('.task_id').val();
+        var content = parent.find('.editing').val();
+
+        $.ajax({
+            url: '/update',
+            type: 'POST',
+            data: {
+                id : id,
+                content : content
+            },
+            dataType: 'json',
+            success: function(json, status) {
+                if (json.status > 0) {
+                    parent.find('.editAreaWrap').remove();
+                    $('<p class="taskTitle"></p>').prependTo(parent).text(content);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                console.log(errorThrown);
+            }
+        });
+
+    });
+
+    $('.doneBtn').click(function(e) {
+        var id = $(this).next('.task_id').val();
+        var target = $(this).parent('.taskItem');
+
+        $.ajax({
+            url: '/delete',
+            type: 'POST',
+            data: {
+                id : id
+            },
+            dataType: 'json',
+            success: function(json, status) {
+                if (json.status > 0) {
+                    target.remove();
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                console.log(errorThrown);
+            }
+        });
+    });
+});
+</script>
+
 </head>
 <body>
 

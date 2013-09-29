@@ -7,9 +7,13 @@
 
             <button type="submit" class="btn">送信する</button>
         </div>
-        <ul class="showPostsArea">
+        <ul class="taskItems">
             : for $posts -> $post {
-                <li><: $post.content :></li>
+                <li class="taskItem">
+                    <p class="taskTitle"><: $post.content :></p>
+                    <p class="doneBtn btn btn-warning">完了</p>
+                    <input class="task_id" type="hidden" name="task_id" value="<: $post.id :>">
+                </li>
             : }
         </ul>
     </div>
