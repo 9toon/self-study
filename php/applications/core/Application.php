@@ -18,7 +18,7 @@ abstract class Application
         $this->configure();
     }
 
-    public function setDebugMode($debug)
+    protected function setDebugMode($debug)
     {
         if ($debug) {
             $this->debug = true;
@@ -31,7 +31,7 @@ abstract class Application
 
     }
 
-    public function initialize()
+    protected function initialize()
     {
         $this->request = new Request();
         $this->response = new Response();
@@ -50,7 +50,7 @@ abstract class Application
     // 定義漏れをなくすためにこうしてるらしい。
     abstract public function getRootDir();
 
-    abstract public function registerRoutes();
+    abstract protected function registerRoutes();
 
     public function isDebugMode()
     {
@@ -120,7 +120,7 @@ abstract class Application
             $this->runAction($controller, $action);
         }
 
-        $this->send();
+        $this->response->send();
     }
 
     /*

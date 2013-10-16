@@ -13,8 +13,8 @@ class Request
 
     public function getGet($name, $default = null)
     {
-        if (isset($_GET[$name]) {
-            return $_GET[$name]);
+        if (isset($_GET[$name])) {
+            return $_GET[$name];
         }
 
         return $default;
@@ -22,8 +22,8 @@ class Request
     
     public function getPost($name, $default = null)
     {
-        if (isset($_POST[$name]) {
-            return $_POST[$name]);
+        if (isset($_POST[$name])) {
+            return $_POST[$name];
         }
 
         return $default;
@@ -31,7 +31,7 @@ class Request
 
     public function getHost()
     {
-        if (!empty($_SERVER['HTTP_HOST']) {
+        if (!empty($_SERVER['HTTP_HOST'])) {
             return $_SERVER['HTTP_HOST'];
         }
 
@@ -40,7 +40,7 @@ class Request
 
     public function isSsl()
     {
-        if (isset($_SERVER['HTTPS'] && $_SERVER['HTTPS'] === 'on') {
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
             return true;
         }
 
@@ -75,9 +75,8 @@ class Request
     
     public function getPathInfo()
     {
-        $base_url = $thid->getBaseUrl();
+        $base_url = $this->getBaseUrl();
         $request_uri = $this->getRequestUri();
-
         if (false !== ($pos = strpos($request_uri, '?'))) {
             $request_uri = substr($request_uri, 0, $pos);
         }
