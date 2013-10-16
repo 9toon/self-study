@@ -1,6 +1,9 @@
 <?php
 
 // @todo abstractって？
+// abstractは「抽象」を意味する
+// この場合は、このクラスは継承先でメソッドなりなんなりをきちんと再定義する必要あり
+// ってのをしめしてるのかと！
 abstract class Application
 {
     protected $debug = false;
